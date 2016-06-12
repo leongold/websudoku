@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import random
 import time
 import cv2
 import sys
@@ -16,12 +17,16 @@ TMP_FILE = '/tmp/screenshot.png'
 
 class WebSudoku(object):
 
-    def __init__(self):
+    def __init__(self, verbose):
+        self._verbose = verbose
         self._values, self._centroids = self._grab_board()
         self._algo = Algorithm(self, self._values)
 
     def solve(self):
         self._algo.solve(0, 0)
+        if self._verbose:
+            return
+
         for row in range(9):
             for col in range(9):
                 if (row, col) in self._algo.board_default:
@@ -32,7 +37,12 @@ class WebSudoku(object):
                 pyautogui.press(str(self._algo.value(row, col)))
 
     def action(self, row, col):
-        return  # TODO: why is it so slow :(((
+        if not self._verbose:
+            return
+
+        if random.random() < 0.2:
+            time.sleep(5)
+
         y, x = self._centroids[(row, col)]
         pyautogui.moveTo(x, y)
         pyautogui.click()
@@ -140,6 +150,7 @@ class WebSudoku(object):
 if __name__ == '__main__':
     # :^)
     sys.setrecursionlimit(1000000000)
+    verbose = True if len(sys.argv) > 1 else False
 
-    ws = WebSudoku()
+    ws = WebSudoku(verbose)
     ws.solve()
