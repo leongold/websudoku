@@ -7,19 +7,25 @@ class Algorithm(object):
         self._board = board
         self._board_default = [(y, x) for y in range(9) for x in range(9) if
                                board[y][x] > 0]
-
     @property
     def board_default(self):
         return self._board_default
 
-    def solve(self, row, col, regressing=False):
+    def value(self, row, col):
+        return self._board[row][col]
+
+    def solve(self):
+        self._initial_solve()
+        self._solve(0, 0)
+
+    def _solve(self, row, col, regressing=False):
         if row == 8 and col == 8:
             if (row, col) in self._board_default:
                 return True
 
             candidate = self._candidates(row, col)[0]
             self._board[row][col] = candidate
-            self._parent.action(row, col)
+            self._parent.fill_cell(row, col)
             return True
 
         if (row, col) in self._board_default:
@@ -29,7 +35,7 @@ class Algorithm(object):
         if self._board[row][col] > 0:
             cache = self._board[row][col]
             self._board[row][col] = 0
-            self._parent.action(row, col)
+            self._parent.fill_cell(row, col)
             candidates = [candidate for candidate in self._candidates(row, col)
                           if candidate > cache]
 
@@ -38,7 +44,7 @@ class Algorithm(object):
             else:
                 candidate = min(candidates)
                 self._board[row][col] = candidate
-                self._parent.action(row, col)
+                self._parent.fill_cell(row, col)
                 return self._advance(row, col)
         else:
             candidates = self._candidates(row, col)
@@ -47,11 +53,17 @@ class Algorithm(object):
 
             candidate = min(candidates)
             self._board[row][col] = candidate
-            self._parent.action(row, col)
+            self._parent.fill_cell(row, col)
             return self._advance(row, col)
 
-    def value(self, row, col):
-        return self._board[row][col]
+    def _initial_solve(self):
+        for row in xrange(9):
+            for col in xrange(9):
+                candidates = self._candidates(row, col)
+                if len(candidates) == 1:
+                    self._board_default.append((row, col))
+                    self._board[row][col] = candidates[0]
+                    self._parent.fill_cell(row, col, default=True)
 
     def _regress(self, row, col):
         if col == 0:
@@ -60,7 +72,7 @@ class Algorithm(object):
         else:
             col -= 1
 
-        return self.solve(row, col, regressing=True)
+        return self._solve(row, col, regressing=True)
 
     def _advance(self, row, col):
         if col == 8:
@@ -69,7 +81,7 @@ class Algorithm(object):
         else:
             col += 1
 
-        return self.solve(row, col)
+        return self._solve(row, col)
 
     def _row(self, row):
         return self._board[row].values()

@@ -23,7 +23,7 @@ class WebSudoku(object):
         self._algo = Algorithm(self, self._values)
 
     def solve(self):
-        self._algo.solve(0, 0)
+        self._algo.solve()
         if self._verbose:
             return
 
@@ -36,8 +36,8 @@ class WebSudoku(object):
                 pyautogui.click()
                 pyautogui.press(str(self._algo.value(row, col)))
 
-    def action(self, row, col):
-        if not self._verbose:
+    def fill_cell(self, row, col, default=False):
+        if not self._verbose and not default:
             return
 
         if random.random() < 0.2:
