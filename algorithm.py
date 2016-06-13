@@ -12,13 +12,6 @@ class Algorithm(object):
     def board_default(self):
         return self._board_default
 
-    def print_board(self):
-        for y in xrange(9):
-            for x in xrange(9):
-                print self._board[y][x],
-            print '\n'
-        print '\n'
-
     def solve(self, row, col, regressing=False):
         if row == 8 and col == 8:
             if (row, col) in self._board_default:
