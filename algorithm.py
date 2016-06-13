@@ -59,7 +59,7 @@ class Algorithm(object):
     def _initial_solve(self):
         for row in xrange(9):
             for col in xrange(9):
-                if (y, x) in self._board_default:
+                if (row, col) in self._board_default:
                     continue
                 candidates = self._candidates(row, col)
                 if len(candidates) == 1:
