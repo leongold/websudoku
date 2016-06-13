@@ -41,7 +41,8 @@ class WebSudoku(object):
             return
 
         if random.random() < 0.2 and not default:
-            time.sleep(5)
+            #time.sleep(5)
+            pass
 
         y, x = self._centroids[(row, col)]
         pyautogui.moveTo(x, y)

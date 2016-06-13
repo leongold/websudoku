@@ -57,15 +57,22 @@ class Algorithm(object):
             return self._advance(row, col)
 
     def _initial_solve(self):
-        for row in xrange(9):
-            for col in xrange(9):
-                if (row, col) in self._board_default:
-                    continue
-                candidates = self._candidates(row, col)
-                if len(candidates) == 1:
-                    self._board_default.append((row, col))
-                    self._board[row][col] = candidates[0]
-                    self._parent.fill_cell(row, col, default=True)
+        while True:
+            solved_cells = False
+
+            for row in xrange(9):
+                for col in xrange(9):
+                    if (row, col) in self._board_default:
+                        continue
+                    candidates = self._candidates(row, col)
+                    if len(candidates) == 1:
+                        self._board_default.append((row, col))
+                        self._board[row][col] = candidates[0]
+                        self._parent.fill_cell(row, col, default=True)
+                        solved_cells = True
+
+            if not solved_cells:
+                break
 
     def _regress(self, row, col):
         if col == 0:
