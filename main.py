@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import gtk
 import random
 import time
 import cv2
@@ -6,7 +7,6 @@ import sys
 import pyautogui
 
 import numpy as np
-import pyscreenshot as ImageGrab
 
 from PIL import Image
 from algorithm import Algorithm
@@ -61,7 +61,12 @@ class WebSudoku(object):
         model = cv2.KNearest()
         model.train(samples, responses)
 
-        ss = ImageGrab.grab()
+        window = gtk.gdk.get_default_root_window()
+        x, y, width, height, _ = window.get_geometry()
+        ss = gtk.gdk.Pixbuf.get_from_drawable(gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, True, 8, width, height),
+                                              gtk.gdk.get_default_root_window(),
+                                              gtk.gdk.colormap_get_system(),
+                                              0, 0, x, y, width, height)
         ss.save(TMP_FILE, 'png')
 
         raw = cv2.imread(TMP_FILE)
