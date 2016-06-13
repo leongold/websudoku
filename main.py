@@ -40,7 +40,7 @@ class WebSudoku(object):
         if not self._verbose and not default:
             return
 
-        if random.random() < 0.2:
+        if random.random() < 0.2 and not default:
             time.sleep(5)
 
         y, x = self._centroids[(row, col)]
